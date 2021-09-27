@@ -4,6 +4,7 @@
 #include "TitleScene.h"
 #include "Camera.h"
 #include "MiniCamera.h"
+#include "AsoUtility.h"
 #include "SceneManager.h"
 
 void SceneManager::Init()
@@ -27,7 +28,29 @@ void SceneManager::Init()
 
 	// デルタタイム
 	mTickCount = std::chrono::system_clock::now();
+	
+	Init3D();
+}
 
+void SceneManager::Init3D(void)
+{
+	// ZBuffer
+	SetUseZBuffer3D(true);
+
+	// ZBuffer
+	SetWriteZBuffer3D(true);
+
+	// BackCulling
+	SetUseBackCulling(true);
+
+	// Camera
+	SetCameraNearFar(0.0f, 1500.0f);
+
+	// Light
+	ChangeLightTypeDir({0.3f, -0.7f, 0.8f});
+
+	// Background
+	SetBackgroundColor(0, 139, 139);
 }
 
 void SceneManager::Update(void)
@@ -79,6 +102,16 @@ void SceneManager::Update(void)
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
 	SetDrawScreen(DX_SCREEN_BACK);
+
+	// Camera Set up
+	VECTOR cameraPos = { 0.0f, 200.0f, -500.0f };
+	VECTOR cameraAngle = {
+		AsoUtility::Deg2RadF(30.0f), 0.0f, 0.0f
+	};
+
+	SetCameraPositionAndAngle(
+		cameraPos, cameraAngle.x, cameraAngle.y, cameraAngle.z
+	);
 
 	// 画面を初期化
 	ClearDrawScreen();
@@ -142,6 +175,3 @@ void SceneManager::DoChangeScene(void)
 	mWaitSceneID = SCENE_ID::NONE;
 
 }
-
-
-

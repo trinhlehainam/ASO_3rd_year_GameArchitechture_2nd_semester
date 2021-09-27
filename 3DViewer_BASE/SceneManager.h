@@ -19,6 +19,7 @@ class SceneManager
 public:
 
 	void Init(void);
+	void Init3D(void);
 	void Update(void);
 	void Release(void);
 

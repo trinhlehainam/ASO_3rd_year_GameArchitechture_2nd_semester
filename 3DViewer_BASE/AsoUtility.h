@@ -10,10 +10,14 @@ public:
 	static std::vector <std::string> Split(std::string& line, char delimiter);
 
 	// ラジアン(rad)から度(deg)
-	static double Rad2Deg(double rad);
+	static double Rad2DegD(double rad);
+
+	static float Rad2DegF(float rad);
 
 	// 度(deg)からラジアン(rad)
-	static double Deg2Rad(double deg);
+	static double Deg2RadD(double deg);
+
+	static float Deg2RadF(float deg);
 
 	// 0～360度の範囲に収める
 	static double DegIn360(double deg);

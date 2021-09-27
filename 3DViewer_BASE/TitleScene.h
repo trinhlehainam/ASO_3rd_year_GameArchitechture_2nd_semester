@@ -1,6 +1,8 @@
 #pragma once
 #include "SceneBase.h"
 class SceneManager;
+class Stage;
+class Unit;
 
 class TitleScene : public SceneBase
 {
@@ -14,5 +16,6 @@ public:
 	void Release(void) override;
 
 private:
-
+	Stage* mStage;
+	Unit* mUnit;
 };
