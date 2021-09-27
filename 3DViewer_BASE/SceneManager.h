@@ -27,6 +27,8 @@ public:
 
 	// デルタタイムの取得
 	float GetDeltaTime(void);
+	
+	Camera* GetCamera();
 
 private:
 

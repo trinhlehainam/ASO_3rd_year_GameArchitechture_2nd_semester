@@ -4,6 +4,7 @@
 #include "TitleScene.h"
 #include "Stage.h"
 #include "Unit.h"
+#include "AsoUtility.h"
 
 TitleScene::TitleScene(SceneManager* manager) : SceneBase(manager)
 {
@@ -35,6 +36,23 @@ void TitleScene::Draw(void)
 {
 	mStage->Draw();
 	mUnit->Draw();
+
+	auto pos = mUnit->GetPos();
+	auto angle = mUnit->GetAngle();
+
+	DrawFormatString(
+		0, 70, 0xfffff,
+		"Charactor's Pos: (%.1f, %.1f, %.1f)",
+		pos.x, pos.y, pos.z
+	);
+
+	DrawFormatString(
+		0, 90, 0xfffff,
+		"Charactor's Angle: (%.1f, %.1f, %.1f)",
+		AsoUtility::Rad2DegF(angle.x),
+		AsoUtility::Rad2DegF(angle.y),
+		AsoUtility::Rad2DegF(angle.z)
+	);
 }
 
 void TitleScene::Release(void)

@@ -20,7 +20,7 @@ void Stage::Update(void)
 void Stage::Draw(void)
 {
 	// Y Line
-	DrawLine(0, 0, 0, 100, 0xffffff, true);
+	//DrawLine(0, 0, 0, 100, 0xffffff, true);
 
 	const int LEN_LINE = 500.0f;
 	

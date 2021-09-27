@@ -10,9 +10,21 @@ public:
 	void Update(void);
 	void Draw(void);
 	void Release(void);
+
+	VECTOR GetPos() const;
+	VECTOR GetAngle() const;
 private:
 	SceneManager* mSceneMng;
-	int mModelID;
+	
 	VECTOR mPos;
+	float mRotateSpeed;
+	VECTOR mAngle;
+	VECTOR mAngleLocal;
+
+	int mModelId;
+	int mAnimWalk;
+	float mTimeTotalAnimWalk;
+	float mStepAnim;
+	float mAnimSpeed;
 };
 

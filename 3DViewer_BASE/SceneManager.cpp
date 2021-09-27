@@ -20,6 +20,7 @@ void SceneManager::Init()
 	mScene->Init();
 
 	mCamera = new Camera();
+	mCamera->Init();
 
 	mMiniCamera = new MiniCamera(mCamera);
 	mMiniCamera->Init();
@@ -42,9 +43,6 @@ void SceneManager::Init3D(void)
 
 	// BackCulling
 	SetUseBackCulling(true);
-
-	// Camera
-	SetCameraNearFar(0.0f, 1500.0f);
 
 	// Light
 	ChangeLightTypeDir({0.3f, -0.7f, 0.8f});
@@ -103,15 +101,7 @@ void SceneManager::Update(void)
 	// (‚R‚c•`‰æ‚ÅŽg—p‚·‚éƒJƒƒ‰‚ÌÝ’è‚È‚Ç‚ªƒŠƒZƒbƒg‚³‚ê‚é)
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	// Camera Set up
-	VECTOR cameraPos = { 0.0f, 200.0f, -500.0f };
-	VECTOR cameraAngle = {
-		AsoUtility::Deg2RadF(30.0f), 0.0f, 0.0f
-	};
-
-	SetCameraPositionAndAngle(
-		cameraPos, cameraAngle.x, cameraAngle.y, cameraAngle.z
-	);
+	mCamera->Update();
 
 	// ‰æ–Ê‚ð‰Šú‰»
 	ClearDrawScreen();
@@ -131,6 +121,8 @@ void SceneManager::Release(void)
 
 	mScene->Release();
 	delete mScene;
+
+	delete mCamera;
 
 }
 
@@ -153,6 +145,11 @@ void SceneManager::ChangeScene(SCENE_ID nextId, bool isFading)
 float SceneManager::GetDeltaTime(void)
 {
 	return mDeltaTime;
+}
+
+Camera* SceneManager::GetCamera()
+{
+	return mCamera;
 }
 
 void SceneManager::DoChangeScene(void)
