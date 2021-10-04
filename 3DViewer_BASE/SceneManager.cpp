@@ -110,7 +110,7 @@ void SceneManager::Update(void)
 	mScene->Draw();
 
 	// ƒ~ƒjƒJƒƒ‰
-	//mMiniCamera->Draw();
+	mMiniCamera->Draw();
 
 	mFader->Draw();
 

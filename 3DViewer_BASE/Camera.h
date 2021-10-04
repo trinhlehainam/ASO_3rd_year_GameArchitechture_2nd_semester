@@ -12,7 +12,8 @@ public:
 	void Update();
 
 	void SetUnit(Unit* unit);
-
+	
+	VECTOR GetPos() const;
 	VECTOR GetAngle() const;
 	VECTOR GetTargetPos() const;
 private:
@@ -25,7 +26,8 @@ private:
 
 	// Height between camera and plane
 	float mHeight;
-	float mDistanceToTarget;
+	float mCameraToPlayer;
+	float mPlayerToTarget;
 
 	float mFov;
 	float mClipNear;

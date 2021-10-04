@@ -11,4 +11,6 @@ public:
 	void Release(void);
 private:
 	SceneManager* mSceneMng;
+
+	int mFloorModelId;
 };

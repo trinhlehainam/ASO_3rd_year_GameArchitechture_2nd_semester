@@ -11,6 +11,8 @@ Stage::Stage(SceneManager* manager)
 
 void Stage::Init(void)
 {
+	mFloorModelId = MV1LoadModel("Model/Stage.mv1");
+	MV1SetPosition(mFloorModelId, { 0.0f, -100.0f, 0.0f });
 }
 
 void Stage::Update(void)
@@ -40,8 +42,13 @@ void Stage::Draw(void)
 			0x0000ff
 		);
 	}
+
+	DrawLine3D({ 0.0f, 0.0f, 0.0f }, { 0.0f, 500.0f, 0.0f }, 0x00ff00);
+	
+	MV1DrawModel(mFloorModelId);
 }
 
 void Stage::Release(void)
 {
+	MV1DeleteModel(mFloorModelId);
 }

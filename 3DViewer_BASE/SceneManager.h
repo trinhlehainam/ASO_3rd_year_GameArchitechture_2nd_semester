@@ -9,8 +9,8 @@ class MiniCamera;
 // ƒV[ƒ“ŠÇ——p
 enum class SCENE_ID
 {
-	NONE
-	, TITLE
+	NONE,
+	TITLE
 };
 
 class SceneManager

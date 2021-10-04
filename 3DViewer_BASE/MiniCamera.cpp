@@ -22,43 +22,43 @@ void MiniCamera::Init(void)
 void MiniCamera::Update(void)
 {
 
-	//VECTOR pos = mCamera->GetPos();
-	//pos.y += 100.0f;
+	VECTOR pos = mCamera->GetPos();
+	pos.y += 100.0f;
 
-	//MV1SetPosition(mModel, mCamera->GetPos());
-	//MV1SetScale(mModel, { 3.0f, 3.0f ,3.0f });
+	MV1SetPosition(mModel, mCamera->GetPos());
+	MV1SetScale(mModel, { 3.0f, 3.0f ,3.0f });
 
-	//VECTOR angles = mCamera->GetAngles();
-	//MV1SetRotationXYZ(mModel, angles);
+	VECTOR angles = mCamera->GetAngle();
+	MV1SetRotationXYZ(mModel, angles);
 
 }
 
 void MiniCamera::DrawScreen(void)
 {
 
-	//SetDrawScreen(mScreen);
+	SetDrawScreen(mScreen);
 
-	//// 画面を初期化
-	//ClearDrawScreen();
+	// 画面を初期化
+	ClearDrawScreen();
 
-	//VECTOR pos = mCamera->GetPos();
-	//pos.z -= 500.0f;
+	VECTOR pos = mCamera->GetPos();
+	pos.z -= 500.0f;
 
-	//// カメラセット
-	//SetCameraPositionAndAngle(
-	//	pos,
-	//	0.0f,
-	//	0.0f,
-	//	0.0f
-	//);
+	// カメラセット
+	SetCameraPositionAndAngle(
+		pos,
+		0.0f,
+		0.0f,
+		0.0f
+	);
 
-	//// ライトの設定
-	//ChangeLightTypeDir({ 0.0f, -1.0f, 0.0f });
+	// ライトの設定
+	ChangeLightTypeDir({ 0.0f, -1.0f, 0.0f });
 
-	//MV1DrawModel(mModel);
+	MV1DrawModel(mModel);
 
-	//// ライトの設定
-	//ChangeLightTypeDir({ 0.3f, -0.7f, 0.8f });
+	// ライトの設定
+	ChangeLightTypeDir({ 0.3f, -0.7f, 0.8f });
 
 }
 

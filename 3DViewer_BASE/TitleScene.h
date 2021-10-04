@@ -3,6 +3,7 @@
 class SceneManager;
 class Stage;
 class Unit;
+class RollBall;
 
 class TitleScene : public SceneBase
 {
@@ -18,4 +19,5 @@ public:
 private:
 	Stage* mStage;
 	Unit* mUnit;
+	RollBall* mRollBall;
 };

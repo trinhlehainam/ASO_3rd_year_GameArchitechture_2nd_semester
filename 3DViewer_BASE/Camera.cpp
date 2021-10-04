@@ -13,9 +13,10 @@ Camera::~Camera()
 void Camera::Init()
 {
 	mHeight = 200.0f;
-	mDistanceToTarget = 500.0f;
+	mCameraToPlayer = 500.0f;
+	mPlayerToTarget = 300.0f;
 
-	mPos = { 0.0f, mHeight, mDistanceToTarget };
+	mPos = { 0.0f, mHeight, mCameraToPlayer };
 	mTargetPos = { 0.0f ,0.0f, 0.0f };
 	mAngle = {
 		AsoUtility::Deg2RadF(30.0f), 0.0f, 0.0f
@@ -66,12 +67,22 @@ void Camera::Update()
 	{
 		mTargetPos = mUnit->GetPos();
 
-		float revRad = AsoUtility::Deg2RadF(180.0f);
-		float dirX = sinf(mAngle.y + revRad);
-		float dirZ = cosf(mAngle.y + revRad);
+		float dirX = sinf(mAngle.y);
+		float dirZ = cosf(mAngle.y);
 
 		VECTOR dir = VNorm({ dirX, 0.0f, dirZ });
-		VECTOR movePow = VScale(dir, mDistanceToTarget);
+		VECTOR movePow = VScale(dir, mPlayerToTarget);
+		
+		movePow.y += mHeight;
+		mTargetPos = VAdd(mTargetPos, movePow);
+		mTargetPos.y = 0.0f;
+
+		float revRad = AsoUtility::Deg2RadF(180.0f);
+		dirX = sinf(mAngle.y + revRad);
+		dirZ = cosf(mAngle.y + revRad);
+
+		dir = VNorm({ dirX, 0.0f, dirZ });
+		movePow = VScale(dir, mCameraToPlayer);
 		
 		movePow.y += mHeight;
 		mPos = VAdd(mTargetPos, movePow);
@@ -87,6 +98,11 @@ void Camera::Update()
 void Camera::SetUnit(Unit* unit)
 {
 	mUnit = unit;
+}
+
+VECTOR Camera::GetPos() const
+{
+	return mPos;
 }
 
 VECTOR Camera::GetAngle() const
