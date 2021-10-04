@@ -5,18 +5,21 @@
 #include "Stage.h"
 #include "Unit.h"
 #include "AsoUtility.h"
+#include "Camera.h"
 
 TitleScene::TitleScene(SceneManager* manager) : SceneBase(manager)
 {
-	mStage = new Stage(manager);
-	mStage->Init();
-
-	mUnit = new Unit(manager);
-	mUnit->Init();
 }
 
 void TitleScene::Init(void)
 {
+	mStage = new Stage(mSceneManager);
+	mStage->Init();
+
+	mUnit = new Unit(mSceneManager);
+	mUnit->Init();
+
+	mSceneManager->GetCamera()->SetUnit(mUnit);
 }
 
 void TitleScene::Update(void)

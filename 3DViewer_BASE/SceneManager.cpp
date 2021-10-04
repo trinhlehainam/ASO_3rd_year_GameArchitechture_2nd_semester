@@ -16,11 +16,11 @@ void SceneManager::Init()
 	mFader = new Fader();
 	mFader->Init();
 
-	mScene = new TitleScene(this);
-	mScene->Init();
-
 	mCamera = new Camera();
 	mCamera->Init();
+
+	mScene = new TitleScene(this);
+	mScene->Init();
 
 	mMiniCamera = new MiniCamera(mCamera);
 	mMiniCamera->Init();

@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+class Unit;
 
 class Camera
 {
@@ -10,8 +11,13 @@ public:
 	void Init();
 	void Update();
 
+	void SetUnit(Unit* unit);
+
 	VECTOR GetAngle() const;
+	VECTOR GetTargetPos() const;
 private:
+	Unit* mUnit;
+
 	VECTOR mPos;
 	VECTOR mAngle;
 	VECTOR mTargetPos;

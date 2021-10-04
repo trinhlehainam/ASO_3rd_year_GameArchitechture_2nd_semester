@@ -46,16 +46,28 @@ void Unit::Update(void)
 	float rotRad = 0.0f;
 	float moveSpeed = 100.0f;
 
-	if (CheckHitKey(KEY_INPUT_RIGHT))
+	if (CheckHitKey(KEY_INPUT_D))
 	{
 		isHitMove = true;
 		rotRad = AsoUtility::Deg2RadF(90.0f);
 	}
 
-	if (CheckHitKey(KEY_INPUT_LEFT))
+	if (CheckHitKey(KEY_INPUT_A))
 	{
 		isHitMove = true;
 		rotRad = AsoUtility::Deg2RadF(-90.0f);
+	}
+
+	if (CheckHitKey(KEY_INPUT_W))
+	{
+		isHitMove = true;
+		rotRad = AsoUtility::Deg2RadF(0.0f);
+	}
+
+	if (CheckHitKey(KEY_INPUT_S))
+	{
+		isHitMove = true;
+		rotRad = AsoUtility::Deg2RadF(180.0f);
 	}
 
 	if (isHitMove)
@@ -73,6 +85,7 @@ void Unit::Update(void)
 
 		float aroundDir = AsoUtility::DirNearAroundRad(radUnitAngleY, radMoveAngleY);
 		float diff = radMoveAngleY - radUnitAngleY;
+
 		if (abs(diff))
 			mAngle.y = radMoveAngleY;
 		else
