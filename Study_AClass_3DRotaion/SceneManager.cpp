@@ -1,9 +1,8 @@
 #include <chrono>
 #include "DxLib.h"
 #include "Fader.h"
-#include "TitleScene.h"
+#include "DemoScene.h"
 #include "Camera.h"
-#include "MiniCamera.h"
 #include "SceneManager.h"
 
 void SceneManager::Init()
@@ -15,14 +14,11 @@ void SceneManager::Init()
 	mFader = new Fader();
 	mFader->Init();
 
-	mCamera = new Camera();
+	mCamera = new Camera(this);
 	mCamera->Init();
 
-	mScene = new TitleScene(this);
+	mScene = new DemoScene(this);
 	mScene->Init();
-
-	mMiniCamera = new MiniCamera(mCamera);
-	mMiniCamera->Init();
 
 	mIsSceneChanging = false;
 
@@ -50,7 +46,8 @@ void SceneManager::Init3D(void)
 	SetCameraNearFar(0.0f, 1500.0f);
 
 	// ライトの設定
-	ChangeLightTypeDir({ 0.3f, -0.7f, 0.8f });
+	ChangeLightTypeDir({ 0.0f, -1.0f, 0.0f });
+	SetUseLighting(false);
 
 	// 背景色設定
 	SetBackgroundColor(0, 139, 139);
@@ -115,10 +112,6 @@ void SceneManager::Update(void)
 	// カメラ更新ステップ
 	mCamera->Update();
 
-	// ミニカメラ
-	mMiniCamera->Update();
-	mMiniCamera->DrawScreen();
-
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -133,10 +126,7 @@ void SceneManager::Update(void)
 	mScene->Draw();
 	mCamera->Draw();
 
-	// ミニカメラ
-	mMiniCamera->Draw();
 	mFader->Draw();
-
 }
 
 void SceneManager::Release(void)
@@ -168,7 +158,8 @@ void SceneManager::ChangeScene(SCENE_ID nextId, bool isFading)
 
 float SceneManager::GetDeltaTime(void)
 {
-	return mDeltaTime;
+	//return mDeltaTime;
+	return 0.016f;
 }
 
 Camera* SceneManager::GetCamera(void)
@@ -185,7 +176,7 @@ void SceneManager::DoChangeScene(void)
 	switch (mSceneID)
 	{
 	case SCENE_ID::TITLE:
-		mScene = new TitleScene(this);
+		mScene = new DemoScene(this);
 		break;
 	default:
 		break;

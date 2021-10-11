@@ -21,12 +21,22 @@ std::vector<std::string> AsoUtility::Split(std::string& line, char delimiter)
 
 }
 
-double AsoUtility::Rad2Deg(double rad)
+double AsoUtility::Rad2DegD(double rad)
+{
+    return rad * (180.0 / DX_PI);
+}
+
+float AsoUtility::Rad2DegF(float rad)
 {
     return rad * (180.0f / DX_PI_F);
 }
 
-double AsoUtility::Deg2Rad(double deg)
+double AsoUtility::Deg2RadD(double deg)
+{
+    return deg * (DX_PI / 180.0);
+}
+
+float AsoUtility::Deg2RadF(float deg)
 {
     return deg * (DX_PI_F / 180.0f);
 }
@@ -34,25 +44,11 @@ double AsoUtility::Deg2Rad(double deg)
 double AsoUtility::DegIn360(double deg)
 {
 
-    deg = fmodf(deg, 360.0f);
-    if (deg < 0.0f)
+    deg = fmodf(deg, 360.0);
+    if (deg < 0.0)
     {
-        deg += 360.0f;
+        deg += 360.0;
     }
-
-    //if (deg > 360.0f)
-    //{
-    //    deg = fmodf(deg, 360.0f);
-    //}
-    //else 
-    //{
-
-    //    while (deg < 0.0f)
-    //    {
-    //        deg += 360.0f;
-    //    }
-
-    //}
 
     return deg;
 
@@ -61,25 +57,11 @@ double AsoUtility::DegIn360(double deg)
 double AsoUtility::RadIn2PI(double rad)
 {
 
-    rad = fmodf(rad, DX_TWO_PI_F);
+    rad = fmodf(rad, DX_TWO_PI);
     if (rad < 0.0f)
     {
-        rad += DX_TWO_PI_F;
+        rad += DX_TWO_PI;
     }
-
-    //if (rad > DX_TWO_PI_F)
-    //{
-    //    rad = fmodf(rad, DX_TWO_PI_F);
-    //}
-    //else
-    //{
-
-    //    while (rad < 0.0f)
-    //    {
-    //        rad += DX_TWO_PI_F;
-    //    }
-
-    //}
 
     return rad;
 }

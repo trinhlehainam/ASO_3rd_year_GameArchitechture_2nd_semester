@@ -1,24 +1,22 @@
 #pragma once
+#include <vector>
 #include "SceneBase.h"
 class SceneManager;
-class Stage;
-class Unit;
+class Coin;
 
-class TitleScene : public SceneBase
+class DemoScene : public SceneBase
 {
 
 public:
 
-	TitleScene(SceneManager* manager);
+	DemoScene(SceneManager* manager);
 	void Init(void) override;
 	void Update(void) override;
 	void Draw(void) override;
-	void DrawDebug(void);
 	void Release(void) override;
 
 private:
 
-	Stage* mStage;
-	Unit* mUnit;
+	Coin* mCoin;
 
 };

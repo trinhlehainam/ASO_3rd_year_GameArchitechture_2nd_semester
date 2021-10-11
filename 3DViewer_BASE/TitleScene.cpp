@@ -4,6 +4,7 @@
 #include "TitleScene.h"
 #include "Stage.h"
 #include "Unit.h"
+#include "Enemy.h"
 #include "AsoUtility.h"
 #include "Camera.h"
 #include "RollBall.h"
@@ -19,6 +20,9 @@ void TitleScene::Init(void)
 
 	mUnit = new Unit(mSceneManager);
 	mUnit->Init();
+
+	mEnemy = new Enemy(mSceneManager, mUnit);
+	mEnemy->Init();
 
 	mRollBall = new RollBall(mSceneManager, mUnit);
 	mRollBall->Init();
@@ -37,6 +41,7 @@ void TitleScene::Update(void)
 	mStage->Update();
 	mUnit->Update();
 	mRollBall->Update();
+	mEnemy->Update();
 
 }
 
@@ -45,13 +50,14 @@ void TitleScene::Draw(void)
 	mStage->Draw();
 	mUnit->Draw();
 	mRollBall->Draw();
+	mEnemy->Draw();
 
 	auto pos = mUnit->GetPos();
 	auto angle = mUnit->GetAngle();
 	auto ballPos = mRollBall->GetPos();
 	float x = ballPos.x - pos.x;
 	float z = ballPos.z - pos.z;
-	float ballAngle = atan2f(z, x);
+	float ballAngle = atan2f(x, z);
 	int textPos = 50;
 
 	DrawFormatString(
@@ -76,11 +82,11 @@ void TitleScene::Draw(void)
 	);
 
 	float diffAngle = ballAngle - angle.y;
+	float viewDeg = AsoUtility::DegIn360(AsoUtility::Rad2DegF(diffAngle));
 	textPos += 20;
 	DrawFormatString(
 		0, textPos, 0xffffff,
-		"Ball's Angle in Player's Perspective: %.1f", AsoUtility::Rad2DegF(diffAngle)
-	);
+		"Ball's Angle in Player's Perspective: %.1f", viewDeg);
 }
 
 void TitleScene::Release(void)
@@ -90,6 +96,9 @@ void TitleScene::Release(void)
 
 	mUnit->Release();
 	delete mUnit;
+
+	mEnemy->Release();
+	delete mEnemy;
 
 	delete mRollBall;
 }

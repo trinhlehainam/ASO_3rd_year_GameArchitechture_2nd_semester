@@ -1,14 +1,13 @@
 #pragma once
+#include "DxLib.h"
 class SceneManager;
 
-class Stage
+class Coin
 {
 
 public:
 
-	static constexpr int LEN_LINE = 500.0f;
-
-	Stage(SceneManager* manager);
+	Coin(SceneManager* manager);
 	void Init(void);
 	void Update(void);
 	void Draw(void);
@@ -16,11 +15,16 @@ public:
 
 private:
 
-	SceneManager* mSceneManager;
+	// ÉÇÉfÉãID
+	int mModelId;
 
-	int mModel;
-
+	// ç¿ïW
 	VECTOR mPos;
+
+	VECTOR mAngles;
+	VECTOR mAnglesLocal;
+
+
 
 };
 

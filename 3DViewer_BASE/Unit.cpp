@@ -38,7 +38,7 @@ void Unit::Update(void)
 	float deltaTime = mSceneMng->GetDeltaTime();
 
 	mStepAnim += mAnimSpeed * deltaTime;
-	if (mStepAnim >= mTimeTotalAnimWalk)
+	if (mStepAnim > mTimeTotalAnimWalk)
 		mStepAnim = 0.0f;
 	MV1SetAttachAnimTime(mModelId, mAnimWalk, mStepAnim);
 
@@ -78,7 +78,7 @@ void Unit::Update(void)
 		mPos.x += sinf(cameraAngle.y + rotRad) * deltaTime * moveSpeed;
 		mPos.z += cosf(cameraAngle.y + rotRad) * deltaTime * moveSpeed;
 
-		auto rotaSpeed_rad = AsoUtility::Deg2RadF(mRotateSpeed);
+		const float kRotaSpeed_rad = AsoUtility::Deg2RadF(mRotateSpeed);
 		float radUnitAngleY = mAngle.y;
 		float radMoveAngleY = cameraAngle.y + rotRad;
 		radMoveAngleY = AsoUtility::RadIn2PI(radMoveAngleY);
@@ -86,10 +86,10 @@ void Unit::Update(void)
 		float aroundDir = AsoUtility::DirNearAroundRad(radUnitAngleY, radMoveAngleY);
 		float diff = radMoveAngleY - radUnitAngleY;
 
-		if (abs(diff))
+		if (abs(diff) <= kRotaSpeed_rad + 0.01f)
 			mAngle.y = radMoveAngleY;
 		else
-			mAngle.y += aroundDir * rotaSpeed_rad;
+			mAngle.y += aroundDir * kRotaSpeed_rad;
 
 		mAngle.y = AsoUtility::RadIn2PI(mAngle.y);
 	}

@@ -3,6 +3,7 @@
 class SceneManager;
 class Stage;
 class Unit;
+class Enemy;
 class RollBall;
 
 class TitleScene : public SceneBase
@@ -19,5 +20,6 @@ public:
 private:
 	Stage* mStage;
 	Unit* mUnit;
+	Enemy* mEnemy;
 	RollBall* mRollBall;
 };

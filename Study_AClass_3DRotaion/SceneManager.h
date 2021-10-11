@@ -1,10 +1,9 @@
 //#pragma once
 #include <chrono>
-#include "TitleScene.h"
+#include "DemoScene.h"
 class SceneBase;
 class Fader;
 class Camera;
-class MiniCamera;
 
 // シーン管理用
 enum class SCENE_ID
@@ -28,7 +27,6 @@ public:
 	// デルタタイムの取得
 	float GetDeltaTime(void);
 
-	// カメラの取得
 	Camera* GetCamera(void);
 
 private:
@@ -39,7 +37,6 @@ private:
 	SceneBase* mScene;
 	Fader* mFader;
 	Camera* mCamera;
-	MiniCamera* mMiniCamera;
 
 	bool mIsSceneChanging;
 
