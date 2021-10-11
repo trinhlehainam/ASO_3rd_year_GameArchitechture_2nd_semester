@@ -6,14 +6,26 @@ class Coin
 {
 
 public:
+	enum class TYPE
+	{
+		VECTOR,
+		MATRIX
+	};
 
 	Coin(SceneManager* manager);
 	void Init(void);
 	void Update(void);
 	void Draw(void);
+	void DrawDirection(void);
 	void Release(void);
 
+	void SetModelVector(void);
+
+	void SetModelMatrix(void);
 private:
+	TYPE mType;
+
+	SceneManager* mSceneMng;
 
 	// ƒ‚ƒfƒ‹ID
 	int mModelId;
@@ -24,7 +36,12 @@ private:
 	VECTOR mAngles;
 	VECTOR mAnglesLocal;
 
+	float mSize;
+	VECTOR mScale;
 
-
+	MATRIX mMatTranslate;
+	MATRIX mMatScale;
+	MATRIX mMatRot;
+	MATRIX mMatRotLocal;
 };
 

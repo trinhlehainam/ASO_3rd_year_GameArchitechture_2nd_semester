@@ -2,6 +2,7 @@
 #include <vector>
 #include "SceneBase.h"
 class SceneManager;
+class Camera;
 class Coin;
 
 class DemoScene : public SceneBase
@@ -16,7 +17,5 @@ public:
 	void Release(void) override;
 
 private:
-
 	Coin* mCoin;
-
 };
