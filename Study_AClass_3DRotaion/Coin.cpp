@@ -12,16 +12,33 @@ void Coin::Init(void)
 	mScale = { mSize, mSize, mSize };
 	mPos = { 0.0f, 50.0f, 0.0f };
 	mAngles = { 0.0f, 0.0f ,0.0f };
-	mAnglesLocal = { AsoUtility::Deg2RadF(-90.0f), 0.0f, 0.0f };
 
-	mType = TYPE::MATRIX;
+	float localRadX = AsoUtility::Deg2RadF(-90.0f);
+	float localRadY = AsoUtility::Deg2RadF(180.0f);
+	float localRadZ = 0.0f;
+	mAnglesLocal = { localRadX, localRadY, localRadZ };
+
+	mMatRotLocal = MGetIdent();
+	mMatRotLocal = MMult(mMatRotLocal, MGetRotX(mAnglesLocal.x));
+	mMatRotLocal = MMult(mMatRotLocal, MGetRotX(mAnglesLocal.y));
+	mMatRotLocal = MMult(mMatRotLocal, MGetRotX(mAnglesLocal.z));
+
+	Quaternion qx = Quaternion::AngleAxis(localRadX, { 1.0f, 0.0f, 0.0f });
+	Quaternion qy = Quaternion::AngleAxis(localRadY, { 0.0f, 1.0f, 0.0f });
+	Quaternion qz = Quaternion::AngleAxis(localRadZ, { 0.0f, 0.0f, 1.0f });
+
+	mQuaRotLocal = mQuaRotLocal.Mult(qy);
+	mQuaRotLocal = mQuaRotLocal.Mult(qx);
+	mQuaRotLocal = mQuaRotLocal.Mult(qz);
+
+	mType = TYPE::QUATERNION;
 }
 
 void Coin::Update(void)
 {
 	mAngles.x = AsoUtility::Deg2RadF(0.0f);
-	mAngles.y = AsoUtility::Deg2RadF(0.0f);
-	mAngles.z += AsoUtility::Deg2RadF(1.0f);
+	mAngles.y += AsoUtility::Deg2RadF(1.0f);
+	mAngles.z += AsoUtility::Deg2RadF(0.0f);
 
 	switch (mType) {
 	case TYPE::VECTOR:
@@ -30,13 +47,16 @@ void Coin::Update(void)
 	case TYPE::MATRIX:
 		SetModelMatrix();
 		break;
+	case TYPE::QUATERNION:
+		SetModelQuaternion();
+		break;
 	}
 }
 
 void Coin::Draw(void)
 {
-	MV1DrawModel(mModelId);
 	DrawDirection();
+	MV1DrawModel(mModelId);
 }
 
 void Coin::DrawDirection(void)
@@ -47,6 +67,9 @@ void Coin::DrawDirection(void)
 	case TYPE::VECTOR:
 		break;
 	case TYPE::MATRIX:
+		mat = mMatRot;
+		break;
+	case TYPE::QUATERNION:
 		mat = mMatRot;
 		break;
 	}
@@ -93,7 +116,6 @@ void Coin::SetModelMatrix(void)
 	mMatRotLocal = MMult(mMatRotLocal, MGetRotX(mAnglesLocal.z));
 	
 	mMatRot = MGetIdent();
-
 	mMatRot = MMult(mMatRot, mMatRotLocal);
 	mMatRot = MMult(mMatRot, MGetRotX(mAngles.x));
 	mMatRot = MMult(mMatRot, MGetRotY(mAngles.y));
@@ -106,6 +128,27 @@ void Coin::SetModelMatrix(void)
 	MATRIX mat = MGetIdent();
 	mat = MMult(mat, mMatScale);
 	mat = MMult(mat, mMatRot);
+	mat = MMult(mat, mMatTranslate);
+
+	MV1SetMatrix(mModelId, mat);
+}
+
+void Coin::SetModelQuaternion(void)
+{
+	mMatRotLocal = MGetIdent();
+	
+	// Rotation
+	Quaternion tmpQ = Quaternion::Euler(mAngles.x, mAngles.y, mAngles.z);
+	mMatRot = tmpQ.ToMatrix();
+	tmpQ.Mult(mQuaRotLocal);
+
+	mMatTranslate = MGetTranslate(mPos);
+
+	mMatScale = MGetScale(mScale);
+	
+	MATRIX mat = MGetIdent();
+	mat = MMult(mat, mMatScale);
+	mat = MMult(mat, tmpQ.ToMatrix());
 	mat = MMult(mat, mMatTranslate);
 
 	MV1SetMatrix(mModelId, mat);

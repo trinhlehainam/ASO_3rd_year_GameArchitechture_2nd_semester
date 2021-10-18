@@ -1,5 +1,7 @@
 #pragma once
 #include "DxLib.h"
+#include "Quaternion.h"
+
 class SceneManager;
 
 class Coin
@@ -9,7 +11,8 @@ public:
 	enum class TYPE
 	{
 		VECTOR,
-		MATRIX
+		MATRIX,
+		QUATERNION
 	};
 
 	Coin(SceneManager* manager);
@@ -22,15 +25,15 @@ public:
 	void SetModelVector(void);
 
 	void SetModelMatrix(void);
+
+	void SetModelQuaternion(void);
 private:
 	TYPE mType;
 
 	SceneManager* mSceneMng;
 
-	// ÉÇÉfÉãID
 	int mModelId;
 
-	// ç¿ïW
 	VECTOR mPos;
 
 	VECTOR mAngles;
@@ -43,5 +46,7 @@ private:
 	MATRIX mMatScale;
 	MATRIX mMatRot;
 	MATRIX mMatRotLocal;
+
+	Quaternion mQuaRotLocal;
 };
 
