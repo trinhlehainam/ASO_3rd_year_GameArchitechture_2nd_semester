@@ -24,7 +24,7 @@ public:
 private:
 	SceneManager* mSceneMng;
 	ResourceManager* mResourceMng;
-	Transform* playerTransform;
+	Transform* mPlayerTransform;
 
 	std::map<IntVector3, std::vector<Rock*>> mMapRocks;
 

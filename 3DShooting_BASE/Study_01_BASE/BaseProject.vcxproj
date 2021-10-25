@@ -164,6 +164,8 @@
     <ClCompile Include="KeyCheck.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Rock.cpp" />
+    <ClCompile Include="RockManager.cpp" />
     <ClCompile Include="SceneBase.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="GameScene.cpp" />
@@ -187,6 +189,8 @@
     <ClInclude Include="KeyCheck.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Rock.h" />
+    <ClInclude Include="RockManager.h" />
     <ClInclude Include="SceneBase.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="GameScene.h" />
