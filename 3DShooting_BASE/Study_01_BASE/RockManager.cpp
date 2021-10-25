@@ -67,6 +67,7 @@ Rock* RockManager::CreateRandomRock(IntVector3 mapPos)
     VECTOR scale = VScale(AsoUtility::VECTOR_ZERO, 2 + GetRand(6);
     VECTOR angle = VScale(AsoUtility::VECTOR_ZERO, AsoUtility::Deg2RadF(GetRand(360)));
     VECTOR pos = VScale(AsoUtility::VECTOR_ONE, MAP_SIZE);
+    pos = VSub(pos, VScale(scale, -0.5));
 
     Rock* rock = new Rock();
     rock->Init(id, pos, angle, scale);
