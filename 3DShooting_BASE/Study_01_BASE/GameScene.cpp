@@ -23,6 +23,10 @@ void GameScene::Init(void)
 	mStage->Init();
 	mSpaceDom->Init();
 	mPlayerShip->Init();
+
+	auto camera = mSceneManager->GetCamera();
+	camera->SetTargetTransform(&mPlayerShip->mTransform);
+	camera->ChangeMode(Camera::MODE::FOLLOW_STRING);
 }
 
 void GameScene::Update(void)

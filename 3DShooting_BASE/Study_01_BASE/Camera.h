@@ -2,7 +2,9 @@
 #include <vector>
 #include "DxLib.h"
 #include "Quaternion.h"
+
 class SceneManager;
+class Transform;
 
 class Camera
 {
@@ -11,12 +13,17 @@ public:
 	enum class MODE {
 		NONE,
 		FREE,
-		FIXED_POINT
+		FIXED_POINT,
+		FOLLOW,
+		FOLLOW_STRING
 	};
 
 	// カメラの初期座標
 	static constexpr VECTOR DEFAULT_CAMERA_POS = { 0.0f, 100.0f, -500.0f };
+	
+	static constexpr VECTOR RELATIVE_CAMERA_FOLLOW = { 0.0, 25.0F, -80.0F };
 
+	static constexpr VECTOR RELATIVE_CAMERA_SPRING = { 0.0, 25.0F, -80.0F };
 
 	// カメラ位置と注視点との相対座標
 	static constexpr VECTOR RELATIVE_TARGET_POS = { 0.0f, -100.0f, 500.0f };
@@ -32,6 +39,8 @@ public:
 	void SetBeforeDraw(void);
 	void SetBeforeDrawFree(void);
 	void SetBeforeDrawFixed(void);
+	void SetBeforeDrawFollow(void);
+	void SetBeofreDrawFollowString(void);
 
 	void ChangeMode(MODE mode);
 
@@ -44,10 +53,13 @@ public:
 	VECTOR GetTargetPos(void);
 	VECTOR GetDir(void);
 
+	void SetTargetTransform(Transform* targetTransform);
+
 private:
 	MODE mMode;
 
 	SceneManager* mSceneManager;
+	Transform* mObjectTransform;
 
 	// カメラの位置
 	VECTOR mPos;
@@ -60,6 +72,7 @@ private:
 
 	// カメラの上方向
 	VECTOR mCameraUp;
-
+	
+	VECTOR mVelocity;
 };
 

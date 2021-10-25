@@ -1,7 +1,13 @@
-#include "DxLib.h"
-#include "GameCommon.h"
 #include "Camera.h"
+
+#include "DxLib.h"
 #include "AsoUtility.h"
+#include "GameCommon.h"
+#include "Quaternion.h"
+
+#include "SceneManager.h"
+#include "Transform.h"
+
 
 Camera::Camera(SceneManager* manager)
 {
@@ -25,6 +31,7 @@ void Camera::SetDefault(void)
 	mPos = DEFAULT_CAMERA_POS;
 	mTargetPos = VAdd(mPos, RELATIVE_TARGET_POS);
 	mCameraUp = { 0.0f, 1.0f, 0.0f };
+	mVelocity = { 1.0f, 1.0f, 1.0f };
 
 	// ƒJƒƒ‰‚ÍXŽ²‚ÉŒX‚¢‚Ä‚¢‚é‚ªA‚±‚ÌŒX‚¢‚½ó‘Ô‚ðŒX‚«–³‚µ‚Æ‚·‚é
 	// mQuaRot‚Í‰ñ“]ŒvŽZ—p‚ÅA
@@ -49,6 +56,12 @@ void Camera::SetBeforeDraw(void)
 		break;
 	case MODE::FIXED_POINT:
 		SetBeforeDrawFixed();
+		break;
+	case MODE::FOLLOW:
+		SetBeforeDrawFollow();
+		break;
+	case MODE::FOLLOW_STRING:
+		SetBeofreDrawFollowString();
 		break;
 	}
 
@@ -86,9 +99,9 @@ void Camera::SetBeforeDrawFree(void)
 		mQuaRot.Mult(axis);
 
 		VECTOR localPos = mQuaRot.PosAxis(RELATIVE_TARGET_POS);
-		mTargetPos = VAdd(mPos, localPos);
 
 		mCameraUp = mQuaRot.GetUp();
+		mTargetPos = VAdd(mPos, localPos);
 		//
 	}
 
@@ -102,12 +115,65 @@ void Camera::SetBeforeDrawFree(void)
 		//
 
 		mPos = VAdd(mPos, moveVec);
-		mTargetPos = VAdd(mTargetPos, mPos);
+		mTargetPos = VAdd(mTargetPos, moveVec);
 	}
 }
 
 void Camera::SetBeforeDrawFixed(void)
 {
+}
+
+void Camera::SetBeforeDrawFollow(void)
+{
+	VECTOR objectPos = mObjectTransform->pos;
+	Quaternion objectRot = mObjectTransform->quaRot;
+	MATRIX objectMat = mObjectTransform->matRot;
+	
+	// Calculate camera position
+	VECTOR relativeCameraPos = objectRot.PosAxis(RELATIVE_CAMERA_FOLLOW);
+	mPos = VAdd(objectPos, relativeCameraPos);
+	//
+	
+	// Calculate camera look at position
+	VECTOR relativeTargetPos = objectRot.PosAxis(RELATIVE_TARGET_POS);
+	mTargetPos = VAdd(objectPos, relativeTargetPos);
+	//
+
+	mCameraUp = objectRot.GetUp();
+}
+
+void Camera::SetBeofreDrawFollowString(void)
+{
+	float delta = mSceneManager->GetDeltaTime();
+
+	VECTOR objectPos = mObjectTransform->pos;
+	Quaternion objectRot = mObjectTransform->quaRot;
+	MATRIX objectMat = mObjectTransform->matRot;
+
+	// Calculate camera pos with spring force
+	VECTOR relativeCameraPos = objectRot.PosAxis(RELATIVE_CAMERA_SPRING);
+
+	constexpr float POW_SPRING = 24.0f;
+	const float DAMPENING = 2.0f * sqrtf(POW_SPRING);
+
+	VECTOR idealPos = VAdd(objectPos, relativeCameraPos);
+
+	VECTOR diff = VSub(mPos, idealPos);
+
+	VECTOR force = VScale(diff, -POW_SPRING);
+	force = VSub(force, VScale(mVelocity, DAMPENING));
+
+	mVelocity = VAdd(mVelocity, force);
+
+	mPos = VAdd(mPos, VScale(mVelocity, delta));
+	//
+
+	// Calculate camera look at position
+	VECTOR relativeTargetPos = objectRot.PosAxis(RELATIVE_TARGET_POS);
+	mTargetPos = VAdd(objectPos, relativeTargetPos);
+	//
+
+	mCameraUp = objectRot.GetUp();
 }
 
 void Camera::ChangeMode(MODE mode)
@@ -120,6 +186,12 @@ void Camera::ChangeMode(MODE mode)
 		break;
 	case MODE::FIXED_POINT:
 		SetBeforeDrawFixed();
+		break;
+	case MODE::FOLLOW:
+		SetBeforeDrawFollow();
+		break;
+	case MODE::FOLLOW_STRING:
+		SetBeofreDrawFollowString();
 		break;
 	}
 }
@@ -179,4 +251,9 @@ VECTOR Camera::GetTargetPos(void)
 VECTOR Camera::GetDir(void)
 {
 	return VNorm(VSub(mTargetPos, mPos));
+}
+
+void Camera::SetTargetTransform(Transform* targetTransform)
+{
+	mObjectTransform = targetTransform;
 }

@@ -16,7 +16,7 @@ void TitleScene::Init(void)
 
 	mImgStartLogo = LoadGraph("Image/StartLogo.png");
 	
-	mSpaceDom = std::make_shared<SpaceDom>(mSceneManager);
+	mSpaceDom = std::make_shared<SpaceDom>(mSceneManager, nullptr);
 	mSpaceDom->Init();
 }
 

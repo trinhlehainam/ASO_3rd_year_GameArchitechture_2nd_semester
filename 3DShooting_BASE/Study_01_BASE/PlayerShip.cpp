@@ -19,11 +19,11 @@ void PlayerShip::Init(void)
 
 void PlayerShip::Update(void)
 {
-	constexpr float speed = 1.0f;
+	ProcessTurn();
 
 	VECTOR dir = mTransform.GetForward();
 
-	mTransform.pos = VAdd(mTransform.pos, VScale(dir, speed));
+	mTransform.pos = VAdd(mTransform.pos, VScale(dir, SPEED_MOVE));
 
 	mTransform.Update();
 }
@@ -36,4 +36,23 @@ void PlayerShip::Draw(void)
 void PlayerShip::Release(void)
 {
 	MV1DeleteModel(mTransform.modelId);
+}
+
+void PlayerShip::ProcessTurn(void)
+{
+	if (CheckHitKey(KEY_INPUT_RIGHT))
+		Turn(SPEED_ROT_DEG_Y, AsoUtility::AXIS_Y);
+	if (CheckHitKey(KEY_INPUT_LEFT))
+		Turn(-SPEED_ROT_DEG_Y, AsoUtility::AXIS_Y);
+	if (CheckHitKey(KEY_INPUT_UP))
+		Turn(-SPEED_ROT_DEG_X, AsoUtility::AXIS_X);
+	if (CheckHitKey(KEY_INPUT_DOWN))
+		Turn(SPEED_ROT_DEG_X, AsoUtility::AXIS_X);
+}
+
+void PlayerShip::Turn(float deg, VECTOR axis)
+{
+	float rad = AsoUtility::Deg2RadF(deg);
+	Quaternion tmpQ = Quaternion::AngleAxis(rad, axis);
+	mTransform.quaRot = mTransform.quaRot.Mult(tmpQ);
 }
