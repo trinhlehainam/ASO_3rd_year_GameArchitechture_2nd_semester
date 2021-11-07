@@ -6,6 +6,7 @@
 #include "TitleScene.h"
 
 #include "SpaceDom.h"
+#include "ParticleGenerator.h"
 
 TitleScene::TitleScene(SceneManager* manager) : SceneBase(manager)
 {
@@ -18,6 +19,9 @@ void TitleScene::Init(void)
 	
 	mSpaceDom = std::make_shared<SpaceDom>(mSceneManager, nullptr);
 	mSpaceDom->Init();
+
+	mParticleGen = std::make_shared<ParticleGenerator>(mSceneManager, VECTOR({0.0f,0.0f,0.0f}), 20.0f);
+	mParticleGen->Init();
 }
 
 void TitleScene::Update(void)
@@ -30,13 +34,14 @@ void TitleScene::Update(void)
 	}
 
 	mSpaceDom->Update();
-
+	mParticleGen->Update();
 }
 
 void TitleScene::Draw(void)
 {
 
 	mSpaceDom->Draw();
+	mParticleGen->Draw();
 
 	// ƒƒS•`‰æ
 	DrawLogo();
@@ -66,5 +71,5 @@ void TitleScene::Release(void)
 {
 
 	DeleteGraph(mImgStartLogo);
-
+	mParticleGen->Release();
 }

@@ -3,6 +3,7 @@
 #include <memory>
 
 class SpaceDom;
+class ParticleGenerator;
 
 class TitleScene : public SceneBase
 {
@@ -18,6 +19,7 @@ public:
 
 private:
 	std::shared_ptr<SpaceDom> mSpaceDom;
+	std::shared_ptr<ParticleGenerator> mParticleGen;
 	int mImgStartLogo;
 
 };

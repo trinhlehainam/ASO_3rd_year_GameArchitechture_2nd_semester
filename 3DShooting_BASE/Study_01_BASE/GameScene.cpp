@@ -9,12 +9,14 @@
 #include "Stage.h"
 #include "SpaceDom.h"
 #include "PlayerShip.h"
+#include "RockManager.h"
 
 GameScene::GameScene(SceneManager* manager) :
 	SceneBase(manager),
 	mStage(std::make_shared<Stage>(mSceneManager)),
 	mPlayerShip(std::make_shared<PlayerShip>(mSceneManager)),
-	mSpaceDom(std::make_shared<SpaceDom>(mSceneManager, &mPlayerShip->mTransform))
+	mSpaceDom(std::make_shared<SpaceDom>(mSceneManager, &mPlayerShip->mTransform)),
+	mRockMng(std::make_shared<RockManager>(mSceneManager, &mPlayerShip->mTransform))
 {
 }
 
@@ -22,6 +24,7 @@ void GameScene::Init(void)
 {
 	mStage->Init();
 	mSpaceDom->Init();
+	mPlayerShip->Init();
 	mPlayerShip->Init();
 
 	auto camera = mSceneManager->GetCamera();
@@ -56,4 +59,5 @@ void GameScene::Release(void)
 	mStage->Release();
 	mSpaceDom->Release();
 	mPlayerShip->Release();
+	mRockMng->Release();
 }

@@ -8,6 +8,7 @@ class SceneManager;
 class SpaceDom;
 class Stage;
 class PlayerShip;
+class RockManager;
 
 class GameScene : public SceneBase
 {
@@ -24,4 +25,5 @@ private:
 	std::shared_ptr<Stage> mStage;
 	std::shared_ptr<PlayerShip> mPlayerShip;
 	std::shared_ptr<SpaceDom> mSpaceDom;
+	std::shared_ptr<RockManager> mRockMng;
 };
