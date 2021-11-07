@@ -9,7 +9,7 @@ bool Application::Init(void)
 {
 
 	// ÉVÉXÉeÉÄèàóù
-	SetWindowText("Project");
+	SetWindowText("1916021_TRINH LE HAI NAM");
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
 	ChangeWindowMode(true);
 	if (DxLib_Init() == -1)

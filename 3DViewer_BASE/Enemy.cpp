@@ -39,7 +39,8 @@ void Enemy::Update(void)
 		float diffAngle = rad - mAngle.y;
 		float viewDeg = AsoUtility::DegIn360(AsoUtility::Rad2DegF(diffAngle));
 		float angle = AsoUtility::DegIn360(AsoUtility::Rad2DegF(mAngle.y));
-		if (viewDeg > angle - mViewAngle / 2.0f || viewDeg < angle + mViewAngle / 2.0f)
+		if ((viewDeg > 360.0f - 30.0f && viewDeg < 360.0f) || 
+			(viewDeg < 30.0f && viewDeg > 0.0f))
 			mIsNotice = true;
 	}
 }
