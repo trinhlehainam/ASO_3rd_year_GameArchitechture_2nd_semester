@@ -4,6 +4,7 @@
 
 class SpaceDom;
 class ParticleGenerator;
+class TextScroll;
 
 class TitleScene : public SceneBase
 {
@@ -19,7 +20,8 @@ public:
 
 private:
 	std::shared_ptr<SpaceDom> mSpaceDom;
-	std::shared_ptr<ParticleGenerator> mParticleGen;
+	ParticleGenerator* mParticleGen;
+	TextScroll* mTextScroll;
 	int mImgStartLogo;
 
 };

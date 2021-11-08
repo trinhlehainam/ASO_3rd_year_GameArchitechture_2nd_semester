@@ -1,7 +1,8 @@
 #include "PlayerShip.h"
 #include "AsoUtility.h"
+#include "ParticleGenerator.h"
 
-PlayerShip::PlayerShip(SceneManager* manager)
+PlayerShip::PlayerShip(SceneManager* manager): mSceneMng(manager)
 {
 }
 
@@ -15,6 +16,7 @@ void PlayerShip::Init(void)
 	mTransform.pos = { 0.0f,0.0f,0.0f };
 
 	mTransform.Update();
+	mParticleGen = new ParticleGenerator(mSceneMng, VECTOR({ 0.0f, 0.0f, 0.0f }), 20.0f);
 }
 
 void PlayerShip::Update(void)
@@ -26,16 +28,23 @@ void PlayerShip::Update(void)
 	mTransform.pos = VAdd(mTransform.pos, VScale(dir, SPEED_MOVE));
 
 	mTransform.Update();
+
+	mParticleGen->Update();
 }
 
 void PlayerShip::Draw(void)
 {
 	MV1DrawModel(mTransform.modelId);
+
+	mParticleGen->Draw();
 }
 
 void PlayerShip::Release(void)
 {
 	MV1DeleteModel(mTransform.modelId);
+
+	mParticleGen->Release();
+	delete mParticleGen;
 }
 
 void PlayerShip::ProcessTurn(void)

@@ -1,6 +1,8 @@
 #pragma once
+#include <memory>
 #include "Transform.h"
 class SceneManager;
+class ParticleGenerator;
 
 class PlayerShip
 {
@@ -21,5 +23,6 @@ public:
 	Transform mTransform;
 private:
 	SceneManager* mSceneMng;
+	ParticleGenerator* mParticleGen;
 };
 

@@ -25,11 +25,11 @@ void GameScene::Init(void)
 	mStage->Init();
 	mSpaceDom->Init();
 	mPlayerShip->Init();
-	mPlayerShip->Init();
+	mRockMng->Init();
 
 	auto camera = mSceneManager->GetCamera();
 	camera->SetTargetTransform(&mPlayerShip->mTransform);
-	camera->ChangeMode(Camera::MODE::FOLLOW_STRING);
+	camera->ChangeMode(Camera::MODE::FOLLOW);
 }
 
 void GameScene::Update(void)
@@ -44,7 +44,7 @@ void GameScene::Update(void)
 	mStage->Update();
 	mSpaceDom->Update();
 	mPlayerShip->Update();
-
+	mRockMng->Update();
 }
 
 void GameScene::Draw(void)
@@ -52,6 +52,7 @@ void GameScene::Draw(void)
 	mStage->DrawGrid();
 	mSpaceDom->Draw();
 	mPlayerShip->Draw();
+	mRockMng->Draw();
 }
 
 void GameScene::Release(void)
