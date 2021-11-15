@@ -172,7 +172,9 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="AsoUtility.cpp" />
+    <ClCompile Include="ShotBase.cpp" />
     <ClCompile Include="SpaceDom.cpp" />
+    <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TextScroll.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -200,7 +202,9 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="AsoUtility.h" />
+    <ClInclude Include="ShotBase.h" />
     <ClInclude Include="SpaceDom.h" />
+    <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TextScroll.h" />
     <ClInclude Include="TitleScene.h" />

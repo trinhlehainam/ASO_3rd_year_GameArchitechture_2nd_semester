@@ -15,8 +15,8 @@ GameScene::GameScene(SceneManager* manager) :
 	SceneBase(manager),
 	mStage(std::make_shared<Stage>(mSceneManager)),
 	mPlayerShip(std::make_shared<PlayerShip>(mSceneManager)),
-	mSpaceDom(std::make_shared<SpaceDom>(mSceneManager, &mPlayerShip->mTransform)),
-	mRockMng(std::make_shared<RockManager>(mSceneManager, &mPlayerShip->mTransform))
+	mSpaceDom(std::make_shared<SpaceDom>(mSceneManager, &mPlayerShip->transform)),
+	mRockMng(std::make_shared<RockManager>(mSceneManager, &mPlayerShip->transform))
 {
 }
 
@@ -28,7 +28,7 @@ void GameScene::Init(void)
 	mRockMng->Init();
 
 	auto camera = mSceneManager->GetCamera();
-	camera->SetTargetTransform(&mPlayerShip->mTransform);
+	camera->SetTargetTransform(&mPlayerShip->transform);
 	camera->ChangeMode(Camera::MODE::FOLLOW);
 }
 
@@ -39,6 +39,20 @@ void GameScene::Update(void)
 	if (keyTrgDown[KEY_SYS_START])
 	{
 		mSceneManager->ChangeScene(SceneManager::SCENE_ID::EVENT, true);
+	}
+
+	auto info = MV1CollCheck_Sphere(
+		mStage->GetModelDungeonID(), -1,
+		mPlayerShip->transform.pos, mPlayerShip->COLLISION_RADIUS
+	);
+
+	if (info.HitNum > 0) {
+		if (!mPlayerShip->IsDestroy()) {
+			mPlayerShip->Destroy();
+		}
+		else {
+			
+		}
 	}
 	
 	mStage->Update();
@@ -51,6 +65,7 @@ void GameScene::Draw(void)
 {
 	mStage->DrawGrid();
 	mSpaceDom->Draw();
+	mStage->Draw();
 	mPlayerShip->Draw();
 	mRockMng->Draw();
 }

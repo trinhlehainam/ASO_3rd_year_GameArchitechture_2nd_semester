@@ -71,6 +71,9 @@ void SceneManager::Init3D(void)
 	//	30.0f * (DX_PI_F / 180.0f), 0.0f, 0.0f
 	//);
 
+	SetFogEnable(true);
+	SetFogColor(5, 5, 5);
+	SetFogStartEnd(3000.0f, 15000.0f);
 }
 
 void SceneManager::Update(void)

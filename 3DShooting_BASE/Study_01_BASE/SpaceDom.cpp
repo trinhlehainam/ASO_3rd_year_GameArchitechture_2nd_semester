@@ -16,6 +16,8 @@ void SpaceDom::Init(void)
 	mTransform.quaRotLocal = Quaternion();
 	mTransform.pos = { 0.0f,0.0f,0.0f };
 
+	//MV1SetUseZBuffer(mTransform.modelId, false);
+	MV1SetWriteZBuffer(mTransform.modelId, false);
 	mTransform.Update();
 }
 
