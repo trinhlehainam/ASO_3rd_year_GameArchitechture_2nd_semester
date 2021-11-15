@@ -4,6 +4,7 @@
 class SceneManager;
 class ParticleGenerator;
 class SpriteAnimator;
+class SpeechBalloon;
 
 class PlayerShip
 {
@@ -35,11 +36,14 @@ public:
 	bool IsDestroy() const;
 
 	Transform transform;
+
+	SpeechBalloon* GetSpeechBalloon();
 private:
 	SceneManager* mSceneMng;
 	ParticleGenerator* mParticleGen;
 	SpriteAnimator* mExplosion;
 	STATE mState;
-	void ChangeState(STATE state);
+	SpeechBalloon* mSpeechBalloon;
+	
 };
 

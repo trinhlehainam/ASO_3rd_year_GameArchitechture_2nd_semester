@@ -3,6 +3,7 @@
 #include "ParticleGenerator.h"
 #include "SpriteAnimator.h"
 #include "ResourceManager.h"
+#include "SpeechBalloon.h"
 
 PlayerShip::PlayerShip(SceneManager* manager): mSceneMng(manager)
 {
@@ -20,7 +21,11 @@ void PlayerShip::Init(void)
 	transform.Update();
 	mParticleGen = new ParticleGenerator(mSceneMng, VECTOR({ 0.0f, 0.0f, 0.0f }), 20.0f);
 
-	mExplosion = new SpriteAnimator(mSceneMng, ResourceManager::SRC::SHIP_EXPLOSION, 10.0f, 2.0f);
+	mExplosion = new SpriteAnimator(mSceneMng, ResourceManager::SRC::SHIP_EXPLOSION, 10.0f, 5.0f);
+
+	mSpeechBalloon = new SpeechBalloon(mSceneMng, SpeechBalloon::TYPE::SPEECH, &transform);
+	mSpeechBalloon->SetRelativePos({ 0.0f, 5.0f, 5.0f });
+	mSpeechBalloon->SetText("Catch me");
 	mState = STATE::RUN;
 }
 
@@ -94,6 +99,9 @@ void PlayerShip::Release(void)
 
 	mExplosion->Release();
 	delete mExplosion;
+
+	mSpeechBalloon->Release();
+	delete mSpeechBalloon;
 }
 
 void PlayerShip::Destroy()
@@ -127,7 +135,7 @@ bool PlayerShip::IsDestroy() const
 	return mState == STATE::DESTROY;
 }
 
-void PlayerShip::ChangeState(STATE state)
+SpeechBalloon* PlayerShip::GetSpeechBalloon()
 {
-	mState = state;
+	return mSpeechBalloon;
 }

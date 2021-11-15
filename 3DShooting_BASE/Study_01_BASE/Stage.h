@@ -1,11 +1,14 @@
 #pragma once
 #include <DxLib.h>
 class SceneManager;
+class Transform;
 
 class Stage
 {
 public:
-	Stage(SceneManager* manager);
+	static constexpr float BOSS_SCENE_RADIUS = 10000.0f;
+
+	Stage(SceneManager* manager, Transform* player);
 	void Init(void);
 	void Update(void);
 	void Draw(void);
@@ -13,10 +16,14 @@ public:
 	void Release(void);
 
 	int GetModelDungeonID() const;
+	VECTOR GetBossPos() const;
 private:
+	Transform* mPlayer;
 	SceneManager* mSceneMng;
 
 	int mModelDungeon;
-	VECTOR mPosDungeon;
-};
+	VECTOR mDungeonPos;
 
+	int mModelBoss;
+	VECTOR mBossPos;
+};

@@ -3,6 +3,7 @@
 #include "Fader.h"
 #include "TitleScene.h"
 #include "GameScene.h"
+#include "EventScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -228,6 +229,7 @@ void SceneManager::DoChangeScene(void)
 		mScene = new GameScene(this);
 		break;
 	case SCENE_ID::EVENT:
+		mScene = new EventScene(this);
 		break;
 	case SCENE_ID::BATTLE:
 		break;

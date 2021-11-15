@@ -10,11 +10,12 @@
 #include "SpaceDom.h"
 #include "PlayerShip.h"
 #include "RockManager.h"
+#include "SpeechBalloon.h"
 
 GameScene::GameScene(SceneManager* manager) :
 	SceneBase(manager),
-	mStage(std::make_shared<Stage>(mSceneManager)),
 	mPlayerShip(std::make_shared<PlayerShip>(mSceneManager)),
+	mStage(std::make_shared<Stage>(mSceneManager, &mPlayerShip->transform)),
 	mSpaceDom(std::make_shared<SpaceDom>(mSceneManager, &mPlayerShip->transform)),
 	mRockMng(std::make_shared<RockManager>(mSceneManager, &mPlayerShip->transform))
 {
@@ -46,13 +47,22 @@ void GameScene::Update(void)
 		mPlayerShip->transform.pos, mPlayerShip->COLLISION_RADIUS
 	);
 
+	auto boss_info = MV1CollCheck_Sphere(
+		mPlayerShip->transform.modelId, -1,
+		mStage->GetBossPos(), mStage->BOSS_SCENE_RADIUS
+	);
+
 	if (info.HitNum > 0) {
 		if (!mPlayerShip->IsDestroy()) {
 			mPlayerShip->Destroy();
 		}
 		else {
-			
+			mSceneManager->ChangeScene(SceneManager::SCENE_ID::EVENT, true);
 		}
+	}
+
+	if (boss_info.HitNum > 0) {
+		mSceneManager->ChangeScene(SceneManager::SCENE_ID::EVENT, true);
 	}
 	
 	mStage->Update();
@@ -63,11 +73,12 @@ void GameScene::Update(void)
 
 void GameScene::Draw(void)
 {
-	mStage->DrawGrid();
 	mSpaceDom->Draw();
 	mStage->Draw();
 	mPlayerShip->Draw();
 	mRockMng->Draw();
+
+	mPlayerShip->GetSpeechBalloon()->Draw();
 }
 
 void GameScene::Release(void)

@@ -154,7 +154,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BossShip.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="EventScene.cpp" />
+    <ClCompile Include="EventShot.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleGenerator.cpp" />
     <ClCompile Include="PlayerShip.cpp" />
@@ -174,6 +177,7 @@
     <ClCompile Include="AsoUtility.cpp" />
     <ClCompile Include="ShotBase.cpp" />
     <ClCompile Include="SpaceDom.cpp" />
+    <ClCompile Include="SpeechBalloon.cpp" />
     <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TextScroll.cpp" />
@@ -184,7 +188,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BossShip.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="EventScene.h" />
+    <ClInclude Include="EventShot.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleGenerator.h" />
     <ClInclude Include="PlayerShip.h" />
@@ -204,6 +211,7 @@
     <ClInclude Include="AsoUtility.h" />
     <ClInclude Include="ShotBase.h" />
     <ClInclude Include="SpaceDom.h" />
+    <ClInclude Include="SpeechBalloon.h" />
     <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TextScroll.h" />
