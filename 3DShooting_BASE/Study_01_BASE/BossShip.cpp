@@ -51,9 +51,10 @@ void BossShip::Update(void)
 	{
 	case BossShip::STATE::EVENT:
 	{
+		VECTOR dir = mTransform->GetForward();
+		mTransform->pos = VAdd(mTransform->pos, VScale(dir, SPEED_MOVE));
 		mEventShot->Update();
 
-		mEventShot->Update();
 		if (!mEventShot->IsAlive()) {
 			mStepEvent -= mSceneMng->GetDeltaTime();
 			if (mStepEvent < 0.0f)
@@ -64,6 +65,10 @@ void BossShip::Update(void)
 	}
 		break;
 	case BossShip::STATE::BATTLE:
+	{
+		VECTOR dir = mTransform->GetForward();
+		mTransform->pos = VAdd(mTransform->pos, VScale(dir, SPEED_MOVE));
+	}
 		break;
 	case BossShip::STATE::DESTROY:
 		break;
@@ -82,8 +87,10 @@ void BossShip::Draw(void)
 	{
 	case BossShip::STATE::EVENT:
 		MV1DrawModel(mTransform->modelId);
+		mEventShot->Draw();
 		break;
 	case BossShip::STATE::BATTLE:
+		MV1DrawModel(mTransform->modelId);
 		break;
 	case BossShip::STATE::DESTROY:
 		break;
@@ -107,7 +114,7 @@ Transform* BossShip::GetTransform()
 	return mTransform;
 }
 
-void BossShip::ChanageState(STATE state)
+void BossShip::ChangeState(STATE state)
 {
 	switch (mState)
 	{

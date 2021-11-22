@@ -35,6 +35,6 @@ private:
 
 	float mStepEvent;
 
-	void ChanageState(STATE state);
+	void ChangeState(STATE state);
 };
 

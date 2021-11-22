@@ -4,6 +4,7 @@
 #include "TitleScene.h"
 #include "GameScene.h"
 #include "EventScene.h"
+#include "BattleScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -232,6 +233,7 @@ void SceneManager::DoChangeScene(void)
 		mScene = new EventScene(this);
 		break;
 	case SCENE_ID::BATTLE:
+		mScene = new BattleScene(this);
 		break;
 	default:
 		break;

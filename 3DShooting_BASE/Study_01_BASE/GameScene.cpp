@@ -47,10 +47,11 @@ void GameScene::Update(void)
 		mPlayerShip->transform.pos, mPlayerShip->COLLISION_RADIUS
 	);
 
-	auto boss_info = MV1CollCheck_Sphere(
-		mPlayerShip->transform.modelId, -1,
-		mStage->GetBossPos(), mStage->BOSS_SCENE_RADIUS
-	);
+	const auto diff = VSub(mStage->GetBossPos(), mPlayerShip->transform.pos);
+	const auto raidus = mPlayerShip->COLLISION_RADIUS + mStage->BOSS_SCENE_RADIUS;
+
+	if (VDot(diff, diff) <= pow(raidus, 2))
+		mSceneManager->ChangeScene(SceneManager::SCENE_ID::EVENT, true);
 
 	if (info.HitNum > 0) {
 		if (!mPlayerShip->IsDestroy()) {
@@ -61,9 +62,7 @@ void GameScene::Update(void)
 		}
 	}
 
-	if (boss_info.HitNum > 0) {
-		mSceneManager->ChangeScene(SceneManager::SCENE_ID::EVENT, true);
-	}
+	MV1CollResultPolyDimTerminate(info);
 	
 	mStage->Update();
 	mSpaceDom->Update();

@@ -61,7 +61,7 @@ void Camera::SetBeforeDraw(void)
 		SetBeforeDrawFollow();
 		break;
 	case MODE::FOLLOW_STRING:
-		SetBeofreDrawFollowString();
+		SetBeforeDrawFollowSrping();
 		break;
 	}
 
@@ -142,7 +142,7 @@ void Camera::SetBeforeDrawFollow(void)
 	mCameraUp = objectRot.GetUp();
 }
 
-void Camera::SetBeofreDrawFollowString(void)
+void Camera::SetBeforeDrawFollowSrping(void)
 {
 	float delta = mSceneManager->GetDeltaTime();
 
@@ -176,6 +176,20 @@ void Camera::SetBeofreDrawFollowString(void)
 	mCameraUp = objectRot.GetUp();
 }
 
+void Camera::SetBeforeDrawShake(void)
+{
+	mStepShake -= mSceneManager->GetDeltaTime();
+	if (mStepShake < 0.0f)
+	{
+		mPos = mDefaultPos;
+		return ChangeMode(MODE::FIXED_POINT);
+	}
+
+	float pow = WIDTH_SHAKE * sinf(mStepShake * SPEED_SHAKE);
+	VECTOR vel = VScale(mShakeDir, pow);
+	mPos = VAdd(mDefaultPos, vel);
+}
+
 void Camera::ChangeMode(MODE mode)
 {
 	mMode = mode;
@@ -191,7 +205,12 @@ void Camera::ChangeMode(MODE mode)
 		SetBeforeDrawFollow();
 		break;
 	case MODE::FOLLOW_STRING:
-		SetBeofreDrawFollowString();
+		SetBeforeDrawFollowSrping();
+		break;
+	case MODE::SHAKE:
+		mStepShake = TIME_SHAKE;
+		mShakeDir = VNorm({ 0.7f, 0.7f, 0.0f });
+		mDefaultPos = mPos;
 		break;
 	}
 }

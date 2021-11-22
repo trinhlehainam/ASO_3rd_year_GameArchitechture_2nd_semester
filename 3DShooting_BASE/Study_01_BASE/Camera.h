@@ -15,7 +15,8 @@ public:
 		FREE,
 		FIXED_POINT,
 		FOLLOW,
-		FOLLOW_STRING
+		FOLLOW_STRING,
+		SHAKE
 	};
 
 	// カメラの初期座標
@@ -27,6 +28,13 @@ public:
 
 	// カメラ位置と注視点との相対座標
 	static constexpr VECTOR RELATIVE_TARGET_POS = { 0.0f, -100.0f, 500.0f };
+
+	// Camera shake
+	static constexpr float TIME_SHAKE = 2.0f;
+
+	static constexpr float WIDTH_SHAKE = 3.0f;
+
+	static constexpr float SPEED_SHAKE = 30.0f;
 	
 	Camera(SceneManager* manager);
 	~Camera();
@@ -40,7 +48,8 @@ public:
 	void SetBeforeDrawFree(void);
 	void SetBeforeDrawFixed(void);
 	void SetBeforeDrawFollow(void);
-	void SetBeofreDrawFollowString(void);
+	void SetBeforeDrawFollowSrping(void);
+	void SetBeforeDrawShake(void);
 
 	void ChangeMode(MODE mode);
 
@@ -74,5 +83,10 @@ private:
 	VECTOR mCameraUp;
 	
 	VECTOR mVelocity;
+
+	// Shake
+	float mStepShake;
+	VECTOR mDefaultPos;
+	VECTOR mShakeDir;
 };
 
