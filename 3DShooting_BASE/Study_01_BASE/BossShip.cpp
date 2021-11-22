@@ -5,6 +5,7 @@
 #include "AsoUtility.h"
 #include "EventShot.h"
 #include "Camera.h"
+#include "Turret.h"
 
 BossShip::BossShip(SceneManager* manager, Transform* player):mSceneMng(manager), mPlayer(player)
 {
@@ -21,7 +22,7 @@ void BossShip::Init(void)
 		AsoUtility::Deg2RadF(20.0f)
 		}
 	);
-	mTransform->quaRot = Quaternion::Euler({
+	mTransform->quaRotLocal = Quaternion::Euler({
 		AsoUtility::Deg2RadF(0.0f),
 		AsoUtility::Deg2RadF(180.0f),
 		AsoUtility::Deg2RadF(0.0f)
@@ -38,11 +39,35 @@ void BossShip::Init(void)
 		mState = STATE::EVENT;
 		break;
 	case SceneManager::SCENE_ID::BATTLE:
+		MV1SetupCollInfo(mTransform->modelId);
 		mState = STATE::BATTLE;
 		break;
 	default:
 		break;
 	}
+	// ‘O•û
+	MakeTurret(
+		{ 4.5f, 5.5f, 7.8f },
+		{ 0.0f, 0.0f, AsoUtility::Deg2RadF(-18.0f) });
+	MakeTurret(
+		{ -4.5f, 5.5f, 7.8f },
+		{ 0.0f, 0.0f, AsoUtility::Deg2RadF(18.0f) });
+
+	// ‰¡
+	MakeTurret(
+		{ 4.5f, 5.5f, 0.0f },
+		{ AsoUtility::Deg2RadF(20.0f), AsoUtility::Deg2RadF(90.0f), 0.0f });
+	MakeTurret(
+		{ -4.5f, 5.5f, 0.0f },
+		{ AsoUtility::Deg2RadF(20.0f), AsoUtility::Deg2RadF(-90.0f), 0.0f });
+
+	// Œã•û
+	MakeTurret(
+		{ 3.5f, 5.0f, -17.8f },
+		{ 0.0f, AsoUtility::Deg2RadF(180.0f), AsoUtility::Deg2RadF(18.0f) });
+	MakeTurret(
+		{ -3.5f, 5.0f, -17.8f },
+		{ 0.0f, AsoUtility::Deg2RadF(180.0f), AsoUtility::Deg2RadF(-18.0f) });
 }
 
 void BossShip::Update(void)
@@ -62,12 +87,23 @@ void BossShip::Update(void)
 				mSceneMng->ChangeScene(SceneManager::SCENE_ID::BATTLE, true);
 			}
 		}
+
+		UpdateTurret();
 	}
 		break;
 	case BossShip::STATE::BATTLE:
 	{
 		VECTOR dir = mTransform->GetForward();
 		mTransform->pos = VAdd(mTransform->pos, VScale(dir, SPEED_MOVE));
+
+		float speed = 0.05f * mSceneMng->GetDeltaTime();
+		Quaternion axis = Quaternion::AngleAxis(speed, AsoUtility::AXIS_Y);
+		mTransform->quaRot = mTransform->quaRot.Mult(axis);
+
+		// Update Collider
+		MV1RefreshCollInfo(mTransform->modelId);
+
+		UpdateTurret();
 	}
 		break;
 	case BossShip::STATE::DESTROY:
@@ -81,6 +117,12 @@ void BossShip::Update(void)
 	mTransform->Update();
 }
 
+void BossShip::UpdateTurret(void)
+{
+	for (auto turret : mTurrets)
+		turret->Update();
+}
+
 void BossShip::Draw(void)
 {
 	switch (mState)
@@ -88,9 +130,11 @@ void BossShip::Draw(void)
 	case BossShip::STATE::EVENT:
 		MV1DrawModel(mTransform->modelId);
 		mEventShot->Draw();
+		DrawTurret();
 		break;
 	case BossShip::STATE::BATTLE:
 		MV1DrawModel(mTransform->modelId);
+		DrawTurret();
 		break;
 	case BossShip::STATE::DESTROY:
 		break;
@@ -101,12 +145,25 @@ void BossShip::Draw(void)
 	}
 }
 
+void BossShip::DrawTurret(void)
+{
+	for (auto turret : mTurrets)
+		turret->Draw();
+}
+
 void BossShip::Release(void)
 {
 	MV1DeleteModel(mTransform->modelId);
 
 	mEventShot->Release();
 	delete mEventShot;
+
+	for (auto turret : mTurrets) {
+		turret->Release();
+		delete turret;
+	}
+
+	mTurrets.clear();
 }
 
 Transform* BossShip::GetTransform()
@@ -125,6 +182,7 @@ void BossShip::ChangeState(STATE state)
 
 		VECTOR dir = VNorm(VSub(mSceneMng->GetCamera()->GetPos(), mTransform->pos));
 		mEventShot->Create(mTransform->pos, dir);
+
 	}
 		break;
 	case BossShip::STATE::BATTLE:
@@ -136,4 +194,10 @@ void BossShip::ChangeState(STATE state)
 	default:
 		break;
 	}
+}
+
+void BossShip::MakeTurret(VECTOR localPos, VECTOR localAddAxis)
+{
+	Turret* turret = new Turret(mSceneMng, mPlayer, mTransform, localPos, localAddAxis);
+	mTurrets.push_back(turret);
 }

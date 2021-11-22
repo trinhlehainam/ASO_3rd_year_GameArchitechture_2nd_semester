@@ -1,7 +1,11 @@
 #pragma once
+#include <vector>
+#include <DxLib.h>
+
 class SceneManager;
 class Transform;
 class EventShot;
+class Turret;
 
 class BossShip
 {
@@ -19,10 +23,14 @@ public:
 	BossShip(SceneManager* manager, Transform* player);
 	void Init(void);
 	void Update(void);
+	void UpdateTurret(void);
 	void Draw(void);
+	void DrawTurret(void);
 	void Release(void);
 
 	Transform* GetTransform();
+
+	std::vector<Turret*> GetTurrets(void);
 private:
 	
 	SceneManager* mSceneMng;
@@ -35,6 +43,9 @@ private:
 
 	float mStepEvent;
 
+	std::vector<Turret*> mTurrets;
+
 	void ChangeState(STATE state);
+	void MakeTurret(VECTOR localPos, VECTOR localAddAxis);
 };
 

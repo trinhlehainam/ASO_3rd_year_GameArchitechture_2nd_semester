@@ -1,9 +1,12 @@
 #include "PlayerShip.h"
+#include <algorithm>
 #include "AsoUtility.h"
 #include "ParticleGenerator.h"
 #include "SpriteAnimator.h"
 #include "ResourceManager.h"
+#include "SceneManager.h"
 #include "SpeechBalloon.h"
+#include "PlayerShot.h"
 
 PlayerShip::PlayerShip(SceneManager* manager): mSceneMng(manager)
 {
@@ -27,6 +30,8 @@ void PlayerShip::Init(void)
 	mSpeechBalloon->SetRelativePos({ 0.0f, 5.0f, 5.0f });
 	mSpeechBalloon->SetText("Catch me");
 	mState = STATE::RUN;
+
+	mShotCooldown = SHOT_INTERVAL;
 }
 
 void PlayerShip::Update(void)
@@ -46,11 +51,17 @@ void PlayerShip::Update(void)
 		break;
 	}
 
+	for (const auto& shot : mShots)
+		shot->Update();
+	
+	if (mShots.size() > 0)
+		DeleteShot();
 }
 
 void PlayerShip::UpdateRun(void)
 {
 	ProcessTurn();
+	ProcessShot();
 
 	VECTOR dir = transform.GetForward();
 
@@ -58,6 +69,7 @@ void PlayerShip::UpdateRun(void)
 
 	transform.Update();
 	mParticleGen->Update();
+
 }
 
 void PlayerShip::UpdateExplosion(void)
@@ -86,7 +98,9 @@ void PlayerShip::Draw(void)
 	default:
 		break;
 	}
-
+	for (const auto& shot : mShots) {
+		shot->Draw();
+	}
 	DrawSphere3D(transform.pos, COLLISION_RADIUS, 10, 0xffffff, 0xffffff, false);
 }
 
@@ -121,6 +135,27 @@ void PlayerShip::ProcessTurn(void)
 		Turn(-SPEED_ROT_DEG_X, AsoUtility::AXIS_X);
 	if (CheckHitKey(KEY_INPUT_DOWN))
 		Turn(SPEED_ROT_DEG_X, AsoUtility::AXIS_X);
+}
+
+void PlayerShip::ProcessShot(void)
+{
+	mShotCooldown -= mSceneMng->GetDeltaTime();
+	if (mShotCooldown <= 0.0f) {
+		mShotCooldown = SHOT_INTERVAL;
+		if (CheckHitKey(KEY_INPUT_N)) {
+			auto shot = std::make_shared<PlayerShot>(mSceneMng, &transform);
+			shot->Create(transform.pos, transform.GetForward());
+			mShots.push_back(std::move(shot));
+		}
+	}
+}
+
+void PlayerShip::DeleteShot(void)
+{
+	//auto deactiveShots = std::remove_if(mShots.begin(), mShots.end(), [](std::shared_ptr<PlayerShot> shot) {
+	//	return !shot->IsAlive();
+	//	});
+	//mShots.erase(deactiveShots);
 }
 
 void PlayerShip::Turn(float deg, VECTOR axis)
