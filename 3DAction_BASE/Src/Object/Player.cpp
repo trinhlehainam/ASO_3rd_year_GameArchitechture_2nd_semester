@@ -90,8 +90,13 @@ void Player::UpdatePlay(void)
 {
 	ProcessMove();
 
-	VECTOR vel = VScale(mMoveDir, mSpeed);
-	mTransform.pos = VAdd(mTransform.pos, vel);
+	CalcGravity();
+
+	Collision();
+
+	Rotate();
+	mTransform.quaRot = mGravityManager->GetTransform()->quaRot;
+	mTransform.quaRot = mTransform.quaRot.Mult(mPlayerRotY);
 }
 
 void Player::Draw(void)
@@ -126,6 +131,7 @@ void Player::DrawDebug(void)
 		v.x, v.y, v.z
 	);
 	//-------------------------------------------------------
+	DrawLine3D(mGravHitUp, mGravHitDown, 0x000000);
 
 }
 
@@ -136,6 +142,27 @@ void Player::Release(void)
 Transform* Player::GetTransform(void)
 {
 	return &mTransform;
+}
+
+void Player::CalcGravity(void)
+{
+	VECTOR gravDir = mGravityManager->GetDirGravity();
+
+	float gravPower = mGravityManager->GetPower();
+
+	VECTOR gravVec = VScale(gravDir, gravPower);
+
+	mJumpPow = gravVec;
+}
+
+void Player::AddCollider(Collider* collider)
+{
+	mColliders.push_back(collider);
+}
+
+void Player::ClearCollider(void)
+{
+	mColliders.clear();
 }
 
 void Player::ChangeState(STATE state)
@@ -166,19 +193,77 @@ void Player::ProcessMove()
 {
 	mMoveDir = AsoUtility::VECTOR_ZERO;
 	Quaternion cameraRot = mSceneManager->GetCamera()->GetQuaRotOutX();
-	if (CheckHitKey(KEY_INPUT_W)) mMoveDir = VAdd(mMoveDir, cameraRot.GetForward());
-	if (CheckHitKey(KEY_INPUT_S)) mMoveDir = VAdd(mMoveDir, cameraRot.GetBack());
-	if (CheckHitKey(KEY_INPUT_A)) mMoveDir = VAdd(mMoveDir, cameraRot.GetLeft());
-	if (CheckHitKey(KEY_INPUT_D)) mMoveDir = VAdd(mMoveDir, cameraRot.GetRight());
+	double rotRad = 0.0;
+	if (CheckHitKey(KEY_INPUT_W)) {
+		mMoveDir = VAdd(mMoveDir, cameraRot.GetForward());
+		rotRad = AsoUtility::Deg2RadD(0.0);
+	}
+	if (CheckHitKey(KEY_INPUT_S)) {
+		mMoveDir = VAdd(mMoveDir, cameraRot.GetBack());
+		rotRad = AsoUtility::Deg2RadD(180.0);
+	}
+	if (CheckHitKey(KEY_INPUT_A)) {
+		mMoveDir = VAdd(mMoveDir, cameraRot.GetLeft());
+		rotRad = AsoUtility::Deg2RadD(270.0);
+	}
+	if (CheckHitKey(KEY_INPUT_D)) {
+		mMoveDir = VAdd(mMoveDir, cameraRot.GetRight());
+		rotRad = AsoUtility::Deg2RadD(90.0);
+	}
 
 	if (!AsoUtility::EqualsVZero(mMoveDir)) {
 		bool isLShift = CheckHitKey(KEY_INPUT_LSHIFT);
 		mAnimationController->Play(int(isLShift ? ANIM_TYPE::FAST_RUN: ANIM_TYPE::RUN));
 		mSpeed = isLShift ? SPEED_RUN : SPEED_MOVE;
 		mMoveDir = VNorm(mMoveDir);
-		mTransform.quaRot.Mult(mTransform.quaRot.LookRotation(mMoveDir));
+
+		SetGoalRotate(rotRad);
 	}
 	else {
 		mAnimationController->Play(int(ANIM_TYPE::IDLE));
+	}
+}
+
+void Player::SetGoalRotate(double rotRad)
+{
+	Quaternion cameraRot = mSceneManager->GetCamera()->GetQuaRotOutX();
+	Quaternion axis = Quaternion::AngleAxis(cameraRot.y + rotRad, AsoUtility::AXIS_Y);
+	double angleDiff_deg = Quaternion::Angle(axis, mGoalQuaRotY);
+	mStepRotTime = 0;
+	mGoalQuaRotY = axis;
+}
+
+void Player::Rotate(void)
+{
+	mStepRotTime -= mSceneManager->GetDeltaTime();
+	double t = (TIME_ROT - mStepRotTime) / TIME_ROT;
+	mPlayerRotY = Quaternion::Slerp(mPlayerRotY, mGoalQuaRotY, t);
+}
+
+void Player::Collision(void)
+{
+	VECTOR vel = VScale(mMoveDir, mSpeed);
+	mTransform.pos = VAdd(mTransform.pos, vel);
+
+	CollisionGravity();
+	mTransform.pos = VAdd(mTransform.pos, mJumpPow);
+}
+
+void Player::CollisionGravity(void)
+{
+	VECTOR currentPos = mTransform.pos;
+	VECTOR gravUpDir = mGravityManager->GetDirUpGravity();
+	VECTOR gravDir = mGravityManager->GetDirGravity();
+	float length = 10.0f;
+	mGravHitUp = VAdd(currentPos, VScale(gravUpDir, length));
+	mGravHitDown = VAdd(currentPos, VScale(gravDir, length));
+
+	for (auto c : mColliders) {
+		auto hit = MV1CollCheck_Line(c->mModelId, -1, mGravHitUp, mGravHitDown);
+
+		if (hit.HitFlag > 0) {
+			mTransform.pos = VAdd(mTransform.pos, VScale(gravUpDir, 2.0f));
+			mJumpPow = AsoUtility::VECTOR_ZERO;
+		}
 	}
 }

@@ -14,6 +14,7 @@ class Player
 public:
 	static constexpr float SPEED_MOVE = 5.0f;
 	static constexpr float SPEED_RUN = 10.0f;
+	static constexpr float TIME_ROT = 1.0f;
 
 	// èÛë‘
 	enum class STATE
@@ -51,6 +52,10 @@ public:
 
 	Transform* GetTransform(void);
 
+	void CalcGravity(void);
+	void AddCollider(Collider* collider);
+	void ClearCollider(void);
+
 private:
 
 	SceneManager* mSceneManager;
@@ -65,16 +70,33 @@ private:
 	// èÛë‘
 	STATE mState;
 
+	// Movement
 	float mSpeed;
-
 	VECTOR mMoveDir;
-
 	VECTOR mMovePow;
+
+	// Rotation
+	Quaternion mPlayerRotY;
+	Quaternion mGoalQuaRotY;
+	float mStepRotTime;
+
+	//
+	VECTOR mJumpPow;
+	
+	std::vector<Collider*> mColliders;
+
+	VECTOR mGravHitDown;
+	VECTOR mGravHitUp;
 
 	// èÛë‘ëJà⁄
 	void ChangeState(STATE state);
 
-	void ProcessMove();
+	void ProcessMove(void);
 
+	void SetGoalRotate(double rotRad);
+	void Rotate(void);
+
+	void Collision(void);
+	void CollisionGravity(void);
 };
 
