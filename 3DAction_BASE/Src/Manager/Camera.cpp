@@ -85,6 +85,10 @@ void Camera::Release(void)
 
 void Camera::ProcessRot(void)
 {
+	if (CheckHitKey(KEY_INPUT_LEFT)) mAngles.y += AsoUtility::Deg2RadF(-1.0f);
+	if (CheckHitKey(KEY_INPUT_RIGHT)) mAngles.y += AsoUtility::Deg2RadF(1.0f);	
+	if (CheckHitKey(KEY_INPUT_UP)) mAngles.x += AsoUtility::Deg2RadF(1.0f);
+	if (CheckHitKey(KEY_INPUT_DOWN)) mAngles.x += AsoUtility::Deg2RadF(-1.0f);
 }
 
 void Camera::SetTransform(Transform* transform)

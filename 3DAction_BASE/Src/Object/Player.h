@@ -12,6 +12,8 @@ class Player
 {
 
 public:
+	static constexpr float SPEED_MOVE = 5.0f;
+	static constexpr float SPEED_RUN = 10.0f;
 
 	// ó‘Ô
 	enum class STATE
@@ -63,8 +65,16 @@ private:
 	// ó‘Ô
 	STATE mState;
 
+	float mSpeed;
+
+	VECTOR mMoveDir;
+
+	VECTOR mMovePow;
+
 	// ó‘Ô‘JˆÚ
 	void ChangeState(STATE state);
+
+	void ProcessMove();
 
 };
 

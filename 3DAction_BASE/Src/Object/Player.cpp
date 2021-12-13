@@ -37,6 +37,8 @@ void Player::Init(void)
 	// アニメーションの設定
 	InitAnimation();
 
+	// TODO:
+	ChangeState(STATE::PLAY);
 }
 
 void Player::InitAnimation(void)
@@ -86,6 +88,10 @@ void Player::Update(void)
 
 void Player::UpdatePlay(void)
 {
+	ProcessMove();
+
+	VECTOR vel = VScale(mMoveDir, mSpeed);
+	mTransform.pos = VAdd(mTransform.pos, vel);
 }
 
 void Player::Draw(void)
@@ -154,4 +160,25 @@ void Player::ChangeState(STATE state)
 		break;
 	}
 
+}
+
+void Player::ProcessMove()
+{
+	mMoveDir = AsoUtility::VECTOR_ZERO;
+	Quaternion cameraRot = mSceneManager->GetCamera()->GetQuaRotOutX();
+	if (CheckHitKey(KEY_INPUT_W)) mMoveDir = VAdd(mMoveDir, cameraRot.GetForward());
+	if (CheckHitKey(KEY_INPUT_S)) mMoveDir = VAdd(mMoveDir, cameraRot.GetBack());
+	if (CheckHitKey(KEY_INPUT_A)) mMoveDir = VAdd(mMoveDir, cameraRot.GetLeft());
+	if (CheckHitKey(KEY_INPUT_D)) mMoveDir = VAdd(mMoveDir, cameraRot.GetRight());
+
+	if (!AsoUtility::EqualsVZero(mMoveDir)) {
+		bool isLShift = CheckHitKey(KEY_INPUT_LSHIFT);
+		mAnimationController->Play(int(isLShift ? ANIM_TYPE::FAST_RUN: ANIM_TYPE::RUN));
+		mSpeed = isLShift ? SPEED_RUN : SPEED_MOVE;
+		mMoveDir = VNorm(mMoveDir);
+		mTransform.quaRot.Mult(mTransform.quaRot.LookRotation(mMoveDir));
+	}
+	else {
+		mAnimationController->Play(int(ANIM_TYPE::IDLE));
+	}
 }
