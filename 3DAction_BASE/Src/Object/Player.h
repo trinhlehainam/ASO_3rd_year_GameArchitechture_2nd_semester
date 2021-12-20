@@ -14,7 +14,11 @@ class Player
 public:
 	static constexpr float SPEED_MOVE = 5.0f;
 	static constexpr float SPEED_RUN = 10.0f;
+
 	static constexpr float TIME_ROT = 1.0f;
+
+	static constexpr float POW_JUMP = 35.0f;
+	static constexpr float TIME_JUMP = 0.5f;
 
 	// èÛë‘
 	enum class STATE
@@ -48,6 +52,7 @@ public:
 	void UpdatePlay(void);
 	void Draw(void);
 	void DrawDebug(void);
+	void DrawShadow(void);
 	void Release(void);
 
 	Transform* GetTransform(void);
@@ -80,9 +85,14 @@ private:
 	Quaternion mGoalQuaRotY;
 	float mStepRotTime;
 
-	//
+	// Jump
 	VECTOR mJumpPow;
+	bool mIsJump;
+	float mJumpStep;
+
+	int mShadowImg;
 	
+	Capsule* mCapsule;
 	std::vector<Collider*> mColliders;
 
 	VECTOR mGravHitDown;
@@ -92,11 +102,15 @@ private:
 	void ChangeState(STATE state);
 
 	void ProcessMove(void);
+	void ProcessJump(void);
 
 	void SetGoalRotate(double rotRad);
 	void Rotate(void);
 
 	void Collision(void);
+	void CollisionCapsule(void);
 	void CollisionGravity(void);
+
+	bool IsLandingEnd(void);
 };
 
