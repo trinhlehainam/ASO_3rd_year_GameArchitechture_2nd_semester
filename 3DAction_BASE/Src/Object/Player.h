@@ -76,7 +76,7 @@ private:
 	STATE mState;
 
 	// Movement
-	float mSpeed;
+	float mMoveSpeed;
 	VECTOR mMoveDir;
 	VECTOR mMovePow;
 
@@ -91,6 +91,9 @@ private:
 	float mJumpStep;
 
 	int mShadowImg;
+
+	int mFootDustEffect;
+	int mFootDustStep;
 	
 	Capsule* mCapsule;
 	std::vector<Collider*> mColliders;
@@ -112,5 +115,7 @@ private:
 	void CollisionGravity(void);
 
 	bool IsLandingEnd(void);
+
+	void FootDustEffect(void);
 };
 

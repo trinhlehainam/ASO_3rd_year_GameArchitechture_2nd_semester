@@ -1,4 +1,5 @@
 #include <string>
+#include <EffekseerForDXLib.h>
 #include "../Utility/AsoUtility.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/ResourceManager.h"
@@ -35,6 +36,8 @@ void Player::Init(void)
 	mTransform.Update();
 
 	mShadowImg = LoadGraph("Data/Image/Shadow.png");
+
+	mFootDustEffect = mResourceManager->Load(ResourceManager::SRC::FOOT_SMOKE).mHandleId;
 
 	mIsJump = false;
 	mJumpStep = 0.0f;
@@ -110,6 +113,8 @@ void Player::UpdatePlay(void)
 	Rotate();
 	mTransform.quaRot = mGravityManager->GetTransform()->quaRot;
 	mTransform.quaRot = mTransform.quaRot.Mult(mPlayerRotY);
+	
+	FootDustEffect();
 }
 
 void Player::Draw(void)
@@ -157,6 +162,7 @@ void Player::DrawDebug(void)
 	DrawLine3D(mTransform.pos, VAdd(mTransform.pos, mJumpPow), 0x000000);
 
 	mCapsule->Draw();
+
 }
 
 void Player::DrawShadow(void)
@@ -332,7 +338,7 @@ void Player::ProcessMove()
 	if (!AsoUtility::EqualsVZero(mMoveDir)) {
 		bool isLShift = CheckHitKey(KEY_INPUT_LSHIFT);
 		mAnimationController->Play(int(isLShift ? ANIM_TYPE::FAST_RUN: ANIM_TYPE::RUN));
-		mSpeed = isLShift ? SPEED_RUN : SPEED_MOVE;
+		mMoveSpeed = isLShift ? SPEED_RUN : SPEED_MOVE;
 		mMoveDir = VNorm(mMoveDir);
 
 		if (!mIsJump) {
@@ -378,15 +384,48 @@ void Player::Rotate(void)
 
 void Player::Collision(void)
 {
-	VECTOR vel = VScale(mMoveDir, mSpeed);
+	VECTOR vel = VScale(mMoveDir, mMoveSpeed);
 	mTransform.pos = VAdd(mTransform.pos, vel);
 
 	CollisionGravity();
+	CollisionCapsule();
+
 	mTransform.pos = VAdd(mTransform.pos, mJumpPow);
 }
 
 void Player::CollisionCapsule(void)
 {
+	Transform trans = Transform(&mTransform);
+	VECTOR currentPos = trans.pos;
+	Capsule cap = mCapsule->Copy(&trans);
+
+	for (const auto& c : mColliders) {
+		auto hits = MV1CollCheck_Capsule(c->mModelId, -1, cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
+		
+		for (int i = 0; i < hits.HitNum; ++i) {
+			auto hit = hits.Dim[i];
+
+			for (int tryCnt = 0; tryCnt < 10; ++tryCnt) {
+				int pHit = HitCheck_Capsule_Triangle(
+					cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
+					hit.Position[0], hit.Position[1], hit.Position[2]);
+
+				if (pHit) {
+					currentPos = VAdd(currentPos, VScale(hit.Normal, 1.0f));
+					trans.pos = currentPos;
+					trans.Update();
+
+					cap = mCapsule->Copy(&trans);
+					continue;
+				}
+				break;
+			}
+		}
+
+		MV1CollResultPolyDimTerminate(hits);
+	}
+
+	mTransform.pos = currentPos;
 }
 
 void Player::CollisionGravity(void)
@@ -426,4 +465,18 @@ bool Player::IsLandingEnd(void)
 		return ret;
 
 	return false;
+}
+
+void Player::FootDustEffect(void)
+{
+	int playHandle = -1;
+	
+	++mFootDustStep;
+	if (mFootDustStep % 15 == 0 && mMoveSpeed > 0.0f) {
+		playHandle = PlayEffekseer3DEffect(mFootDustEffect);
+
+		SetScalePlayingEffekseer3DEffect(playHandle, 5.0f, 5.0f, 5.0f);
+
+		SetPosPlayingEffekseer3DEffect(playHandle, mTransform.pos.x, mTransform.pos.y, mTransform.pos.z);
+	}
 }

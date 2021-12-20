@@ -1,5 +1,6 @@
 #include <math.h>
 #include <DxLib.h>
+#include <EffekseerForDXLib.h>
 #include "../Utility/AsoUtility.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/GravityManager.h"
@@ -37,7 +38,6 @@ void Camera::Update()
 
 void Camera::SetBeforeDraw(void)
 {
-
 	// クリップ距離を設定する(SetDrawScreenでリセットされる)
 	SetCameraNearFar(10.0f, 30000.0f);
 
@@ -58,6 +58,8 @@ void Camera::SetBeforeDraw(void)
 		mCameraUp
 	);
 
+	// Sync Dxlib's camera setting with Effekseer's camera setting
+	Effekseer_Sync3DSetting();
 }
 
 void Camera::SetBeforeDrawFixedPoint(void)
